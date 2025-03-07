@@ -33,7 +33,7 @@ const Home = () => {
             }
         };
         fetchData();
-    }, [openNotification]);
+    }, []);
 
     const onFinish = async (values) => {
 
