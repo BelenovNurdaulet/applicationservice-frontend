@@ -1,14 +1,14 @@
 import { Form, Input, Button, Card, notification } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import {useNotificationHandler} from "../helpers/notificationHelper.js";
-import {validateLoginForm} from "../helpers/validationHelper.js";
-import AppFooter from "../components/Footer";
+import { useNotificationHandler } from "../helpers/notificationHelper.js";
+import { validateLoginForm } from "../helpers/validationHelper.js";
 
 
 const Login = () => {
     const [loading, setLoading] = useState(false);
     const { openNotification, contextHolder } = useNotificationHandler();
+    const navigate = useNavigate();
 
     const onFinish = async (values) => {
         if (!validateLoginForm(values, openNotification)) return;
@@ -33,7 +33,14 @@ const Login = () => {
                 return;
             }
 
+
+            localStorage.setItem("token", data.token);
+
             openNotification("success", "Успешный вход", "Добро пожаловать!");
+
+
+            navigate("/user");
+
         } catch (error) {
             openNotification("error", "Ошибка подключения", "Не удалось подключиться к серверу.");
         } finally {
