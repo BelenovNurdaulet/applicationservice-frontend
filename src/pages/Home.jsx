@@ -6,6 +6,7 @@ import AppFooter from "../components/Footer";
 
 import { validateRequestForm } from "../helpers/validationHelper";
 import {useNotificationHandler} from "../helpers/notificationHelper.js";
+import {handleFormSubmit} from "../helpers/requestHelper.js";
 
 const { Header, Content } = Layout;
 const { Option } = Select;
@@ -35,35 +36,7 @@ const Home = () => {
         fetchData();
     }, []);
 
-    const onFinish = async (values) => {
-
-        const validationErrors = validateRequestForm(values, openNotification);
-
-        if (Object.keys(validationErrors).length > 0) {
-            setErrors(validationErrors);
-            return;
-        }
-
-        setLoading(true);
-        try {
-            const response = await fetch(import.meta.env.VITE_API_URL + "/applications/post", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(values),
-            });
-
-            if (!response.ok) throw new Error("Ошибка при отправке заявки");
-
-            openNotification("success", "Успешно", "Заявка отправлена.");
-            form.resetFields();
-            setErrors({});
-        } catch (error) {
-            openNotification("error", "Ошибка", error.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
+    const onFinish = (values) => handleFormSubmit(values, form, setLoading, setErrors, openNotification);
     return (
         <Layout style={{ minHeight: "100vh" }}>
             {contextHolder}

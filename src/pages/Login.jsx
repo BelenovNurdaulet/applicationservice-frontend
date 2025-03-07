@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useNotificationHandler } from "../helpers/notificationHelper.js";
 import { validateLoginForm } from "../helpers/validationHelper.js";
+import {handleLogin} from "../helpers/requestHelper.js";
 
 
 const Login = () => {
@@ -10,43 +11,7 @@ const Login = () => {
     const { openNotification, contextHolder } = useNotificationHandler();
     const navigate = useNavigate();
 
-    const onFinish = async (values) => {
-        if (!validateLoginForm(values, openNotification)) return;
-
-        setLoading(true);
-        try {
-            const response = await fetch(import.meta.env.VITE_API_URL + "/auth/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(values),
-            });
-
-            if (response.status === 401 || response.status === 500) {
-                openNotification("error", "Ошибка авторизации", "Неверный логин или пароль.");
-                return;
-            }
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                openNotification("error", "Ошибка", data.message || "Неизвестная ошибка.");
-                return;
-            }
-
-
-            localStorage.setItem("token", data.token);
-
-            openNotification("success", "Успешный вход", "Добро пожаловать!");
-
-
-            navigate("/user");
-
-        } catch (error) {
-            openNotification("error", "Ошибка подключения", "Не удалось подключиться к серверу.");
-        } finally {
-            setLoading(false);
-        }
-    };
+    const onFinish = (values) => handleLogin(values, setLoading, openNotification, navigate);
 
     return (
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>

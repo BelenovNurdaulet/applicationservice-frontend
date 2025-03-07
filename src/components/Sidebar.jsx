@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Layout, Menu } from 'antd';
 import { HomeOutlined, UserOutlined, LoginOutlined, LogoutOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
+import {useAuth} from "../helpers/authHelper.js";
 
 const { Sider } = Layout;
 
@@ -39,12 +40,7 @@ const Sidebar = () => {
         }
     }, []);
 
-    const handleLogout = () => {
-
-        localStorage.removeItem('token');
-        setIsAuthenticated(false);
-        setUserName('');
-    };
+    const { handleLogout } = useAuth();
 
     return (
         <Sider collapsible>
